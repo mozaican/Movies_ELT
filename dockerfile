@@ -5,6 +5,10 @@ FROM apache/airflow:${AIRFLOW_VERSION}-python${PYTHON_VERSION}
 
 ENV AIRFLOW_HOME=/opt/airflow
 
-COPY requirements.txt /
+USER root
+
+COPY requirements.txt /requirements.txt
 
 RUN pip install --no-cache-dir "apache-airflow==${AIRFLOW_VERSION}" -r /requirements.txt
+
+USER airflow
