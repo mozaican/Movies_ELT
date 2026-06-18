@@ -1,24 +1,21 @@
-import os
 import json
 import requests
 from datetime import date
-from dotenv import load_dotenv
+from airflow.decorators import task
+from airflow.models import Variable
 
 
-load_dotenv()
+TOKEN = Variable.get("API_TOKEN")
 
+@task
 def get_movies_stats():
 
     try:
         url = "https://api.themoviedb.org/3/movie/popular"
 
-        token = os.getenv("API_TOKEN")
-        if not token:
-            raise ValueError("API_TOKEN is not set in the environment")
-
         headers = {
             "accept": "application/json",
-            "Authorization": f"Bearer {token}"
+            "Authorization": f"Bearer {TOKEN}"
         }
 
         response = requests.get(url, headers=headers)
@@ -41,6 +38,7 @@ def get_movies_stats():
         raise e
     
 
+@task
 def save_to_json(exatracted_data):
     file_path = f"./data/movies_stats_{date.today()}.json"
 
